@@ -1,14 +1,17 @@
 import zio._
 import zio.Console._
+import scala.io.BufferedSource
 
 object MyApp extends ZIOAppDefault {
 
-  def run = myAppLogic
+  def acquire = ZIO.attempt(scala.io.Source.fromFile("src/test/resources/day1_input.txt"))
+  def release = (buffer :BufferedSource) => ZIO.succeed(buffer.close)
+  def process = (buffer :BufferedSource)=> ZIO.attempt(buffer.getLines.toList)
+  val readFile : Task[List[String]] = ZIO.acquireReleaseWith(acquire)(release)(process)
 
-  val myAppLogic =
+  def run =
     for {
-      _    <- printLine("Hello! What is your name?")
-      name <- readLine
-      _    <- printLine(s"Hello, ${name}, welcome to ZIO!")
+      v    <- readFile
+      _    <- printLine(v)
     } yield ()
 }
