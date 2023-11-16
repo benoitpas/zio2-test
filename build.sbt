@@ -10,5 +10,6 @@ lazy val root = (project in file("."))
   )
 
 libraryDependencies ++= Seq(
-  "dev.zio"       %% "zio"            % zioVersion
+  "dev.zio"       %% "zio"            % zioVersion,
+  "com.github.sbt" % "junit-interface" % "0.13.3" % "test"
 )
